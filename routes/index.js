@@ -100,6 +100,7 @@ router.get('/userDelete', function(req, res, next) {
       if (err) {
           console.log(err);
       }
+      
       res.redirect('/');
   });
 });
