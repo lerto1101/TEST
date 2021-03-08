@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title></title>
+    <script type="text/javascript">
+        function Check() {
+    
+            var id = document.getElementsByName('userid')[0].value;
+            var pwd = document.getElementsByName('password')[0].value;
+            var mail = document.getElementsByName('email')[0].value;
+            if (id && pwd && mail) {
+                return true;
+            }
+            alert('please input the info.');
+            return false;
+    
+        }
+    </script>
 </head>
 <body>
     <form name="addform" action="userAdd" method="post" accept-charset="utf-8">
@@ -24,6 +38,7 @@
             <input type='submit' value='Submit'>
             <input type='reset' value='Reset'>
             <input type='button' value='Back' onclick="javascript: location.href='/'">
+            <label><%=msg %></label>
         </div>
     </form>
 </body>
