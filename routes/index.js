@@ -5,37 +5,25 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   var db = req.con;
   var data = "";
-  db.query('SELECT * FROM account',function(err,rows){
+
+  var user = "";
+  var user = req.query.user;
+
+  var filter = "";
+  if(user){
+    filter = 'WHERE userid = ?';
+  }
+
+  db.query('SELECT * FROM account'+ filter,user,function(err,rows){
     if(err){
       console.log(err);
     }
     var data = rows;
 
     //use index.ejs
-    res.render('index', { title: 'Account Information',data:data });
+    res.render('index', { title: 'Account Information',data:data,user:user });
   });
 });
-
-//add post
-router.post('/userAdd',function(req,res,next){
-  var db = req.con;
-
-  var sql = {
-      userid: req.body.userid,
-      password: req.body.password,
-      email: req.body.email
-  };
-
-  //console.log(sql);
-  var qur = db.query('INSERT INTO account SET ?',sql,function(err,rows){
-      if(err){
-      console.log(err);
-      }
-      res.setHeader('Content-Type','application/json');
-      res.redirect('/');
-  });
-});
-
 
 //add page
 router.get('/add',function(req,res,next){
@@ -43,18 +31,55 @@ router.get('/add',function(req,res,next){
   res.render('userAdd',{title:'Add User'});
 });
 
-function Edit(id){
-  window.location.href = "/userEdit?id=" + id;
-}
+//add post
+router.post('/userAdd',function(req,res,next){
+  
+  var db = req.con;
+
+  var userid = req.body.userid;
+
+var qur = db.query('SELECT userid FROM account WHERE userid = ?', userid, function(err, rows) {
+        if (err) {
+            console.log(err);
+        }
+
+        var count = rows.length;
+        if (count > 0) {
+
+            var msg = 'Userid already exists.';
+            res.render('userAdd', { title: 'Add User', msg: msg });
+
+        } else {
+
+            var sql = {
+                userid: req.body.userid,
+                password: req.body.password,
+                email: req.body.email
+            };
+
+            //console.log(sql);
+            var qur = db.query('INSERT INTO account SET ?', sql, function(err, rows) {
+                if (err) {
+                    console.log(err);
+                }
+                res.setHeader('Content-Type', 'application/json');
+                res.redirect('/');
+            });
+        }
+    });
+});
+
+
+
 
 //edit page
 router.get('/userEdit',function(req,res,next){
   
-  var id = req.query,id;
+  var id = req.query.id;
   var db = req.con;
   var data = "";
 
-  db.query('SELECT * FROM account WHERE id =?',id,function(err,rows){
+  db.query('SELECT * FROM account WHERE id = ?',id,function(err,rows){
     if(err){
       console.log(err);
     }
@@ -63,14 +88,15 @@ router.get('/userEdit',function(req,res,next){
   });
 });
 
+//edit post
 router.post('/userEdit',function(req,res,next){
   var db = req.con;
-  var id = req.body,id;
+  var id = req.body.id;
 
   var sql = {
-    userid:req.body.userid,
+    userid: req.body.userid,
     password: req.body.password,
-    email:req.body.email
+    email: req.body.email
   };
 
   var qur = db.query('UPDATE account SET ? WHERE id = ?',[sql,id],function(err,rows){
@@ -84,12 +110,7 @@ router.post('/userEdit',function(req,res,next){
 });
 
 
-function Delete(id) {
-  var rs = confirm('Confirm to delete?');
-  if (rs) {
-      window.location.href = "/userDelete?id=" + id;
-  }
-}
+//delete page
 
 router.get('/userDelete', function(req, res, next) {
 

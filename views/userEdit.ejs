@@ -1,17 +1,17 @@
-<form name="editform" action="userEdit" method="POST" accept-charset="utf-8">
+<form name="editform" action="userEdit" method="post" accept-charset="utf-8">
     <h1>Account - Edit</h1>
-    <input type="hidden" name="id" value="%=[0].id %>" />
+    <input type="hidden" name="id" value="%=data[0].id %>" />
     <div>
         <label>userid:</label>
-        <input type="text" name="userid" placeholder="userid" value="<%=data[0].userid %>" readonly />
+        <input type="text" name="userid" placeholder="userid" value="<%=data[0].userid %>" readonly/>
     </div>
     <div>
         <label>password:</label>
-        <input type="text" name="password" placeholder="password" value="<%=data[0].password %>" readonly />
+        <input type="text" name="password" placeholder="password" value="<%=data[0].password %>"  />
     </div>
     <div>
         <label>email:</label>
-        <input type="text" name="email" placeholder="email" value="<%=data[0].email %>" readonly />
+        <input type="text" name="email" placeholder="email" value="<%=data[0].email %>"/>
     </div>
     <div>
         <input type='submit' value='Submit'>
