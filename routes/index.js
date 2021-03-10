@@ -5,20 +5,20 @@ const router = express.Router();
 router.get('/', function(req, res, next) {
 
     const {con} = req;
-    let data = "";
-    let {user} = req.query;
+    const {user} = req.query;
     let filter;
 
     if (user) {
         filter = 'WHERE userid = ?';
     }
 
-    con.query(`SELECT * FROM account ${filter}`, user, (err, rows)=> {
+    con.query(`SELECT * FROM account ${filter}`, user, (err, data)=> {
         
         if (err) {
             console.log(err);
         }
-        let data = rows;
+
+
 
         // use index.ejs
         res.render('index', { title: 'Account Information', data, user });
@@ -36,32 +36,32 @@ router.get('/add', (req, res, next)=> {
 // add post
 router.post('/userAdd', (req, res, next)=> {
 
-    let {con} = req;
+    const {con} = req;
 
     // check userid exist
     // let userid = req.body.userid;
     const {userid} = req.body;
-    let qur = con.query('SELECT userid FROM account WHERE userid = ?', userid, (err, rows)=> {
+    con.query('SELECT userid FROM account WHERE userid = ?', userid, (err, rows)=> {
         if (err) {
             console.log(err);
         }
 
-        let count = rows.length;
-        if (count > 0) {
+        
+        if (rows.length > 0) {
 
             const msg = 'Userid already exists.';
-            res.render('userAdd', { title: 'Add User', msg: msg });
+            res.render('userAdd', { title: 'Add User', msg });
 
         } else {
-            let {userid,password,email} = req.body;
-            let sql = {
+            const {userid,password,email} = req.body;
+            const sql = {
                 userid,
                 password,
                 email
             };
 
             //console.log(sql);
-            let qur = con.query('INSERT INTO account SET ?', sql, (err, rows)=> {
+            con.query('INSERT INTO account SET ?', sql, (err, rows)=> {
                 if (err) {
                     console.log(err);
                 }
@@ -77,11 +77,11 @@ router.post('/userAdd', (req, res, next)=> {
 // edit page
 router.get('/userEdit', (req, res, next) =>{
 
-    const id = req.query.id;
+    const {id} = req.query;
     //console.log(id);
 
     const {con} = req;
-    let data = "";
+    
 
     con.query('SELECT * FROM account WHERE id = ?', id, (err, rows)=> {
         if (err) {
@@ -101,7 +101,7 @@ router.post('/userEdit', function(req, res, next) {
 
     const {id} = req.body;
 
-    let {userid,password,email} = req.body;
+    const {userid,password,email} = req.body;
 
     const sql = {
         userid,
@@ -109,7 +109,7 @@ router.post('/userEdit', function(req, res, next) {
         email,
     };
 
-    let qur = con.query('UPDATE account SET ? WHERE id = ?', [sql, id], (err, rows)=> {
+    con.query('UPDATE account SET ? WHERE id = ?', [sql, id], (err, rows)=> {
         if (err) {
             console.log(err);
         }
@@ -127,7 +127,7 @@ router.get('/userDelete', (req, res, next)=> {
 
     const {con} = req;
 
-    let qur = con.query('DELETE FROM account WHERE id = ?', id, (err, rows)=> {
+    con.query('DELETE FROM account WHERE id = ?', id, (err, rows)=> {
         if (err) {
             console.log(err);
         }
