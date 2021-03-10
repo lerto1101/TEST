@@ -109,7 +109,7 @@ router.post('/userEdit', function(req, res, next) {
         email,
     };
 
-    con.query('UPDATE account SET ? WHERE id =  ?', [sql, id], (err, rows)=> {
+    con.query('UPDATE account SET ? WHERE id = ?', [sql, id], (err, rows)=> {
         if (err) {
             console.log(err);
         }
